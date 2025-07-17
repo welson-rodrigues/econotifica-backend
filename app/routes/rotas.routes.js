@@ -1,5 +1,3 @@
-
-
 module.exports = app => {
   const Usuari = require("../controllers/user.controllers.js");
   const Lixo = require("../controllers/lixeira.controllers.js");
@@ -8,27 +6,19 @@ module.exports = app => {
   var router = require("express").Router();
 
   // rotas usuario
+  router.post("/api/user", Usuari.create); // criar usuário
 
-  router.post("/api/user", Usuari.create); // body tem de conter tudo do usuario (rota de criação)
+  router.get("/api/user", Usuari.findAll); // listar todos usuários
 
-  router.get("/api/user", Usuari.findAll); // body pode ser vazio (rota de pesquisa)
-
-  router.get("/api/user/login", Usuari.findOne); // body tem de conter email e senha (rota de altenticação)
-
-
+  // ALTERAÇÃO: trocar GET por POST para login
+  router.post("/api/user/login", Usuari.findOne); // login (autenticação)
 
   // rotas lixeiras
-
-  router.get("/api/lixeira", Lixo.findAll); // body vazio (rota de pesquisa)
+  router.get("/api/lixeira", Lixo.findAll);
 
   router.put("/api/lixeira/:id", Lixo.update);
 
-  // APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO
-  // APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO
-  // APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO
-
-  //quem quiser testar e ageitar eu agradeço
-
+  // outras rotas não testadas
   router.put("/api/user/:id", Usuari.update);
 
   router.delete("/api/user/:id", Usuari.delete);
@@ -37,6 +27,3 @@ module.exports = app => {
 
   app.use("/", router);
 };
-
-
-
