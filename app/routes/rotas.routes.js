@@ -13,7 +13,7 @@ module.exports = app => {
 
   router.get("/api/user", Usuari.findAll); // body pode ser vazio (rota de pesquisa)
 
-  router.get("/api/user/2", Usuari.findOne); // body tem de conter email e senha (rota de altenticação)
+  router.get("/api/user/login", Usuari.findOne); // body tem de conter email e senha (rota de altenticação)
 
 
 
