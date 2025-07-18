@@ -1,75 +1,62 @@
-const User = require("../models/user.model.js");
+const User = require("../models/user.model");
 
 // Criar usuário
 exports.create = (req, res) => {
   if (!req.body) {
-    res.status(400).send({ message: "body vaziu" });
+    res.status(400).send({ message: "Conteúdo vazio!" });
     return;
   }
 
-  const UserBody = new User({
-    nome: req.body.nome || null,
-    email: req.body.email || null,
-    senha: req.body.senha || null,
-    tipo: req.body.tipo || null,
-    bairro: req.body.bairro || null,
-    cidade: req.body.cidade || null,
+  const user = new User({
+    email: req.body.email,
+    senha: req.body.senha,
   });
 
-  User.create(UserBody, (err, data) => {
+  User.create(user, (err, data) => {
     if (err)
-      res.status(500).send({ message: err.message || "Erro ao criar User (controllers)" });
+      res.status(500).send({ message: err.message || "Erro ao criar usuário." });
     else res.send(data);
   });
 };
 
-// Buscar todos usuários
-exports.findAll = (req, res) => {
-  User.getAll((err, data) => {
-    if (err)
-      res.status(500).send({ message: err.message || "(controllers) Erro ao puxar os dados" });
-    else res.status(200).json(data.rows);
-  });
-};
-
-// AUTENTICAÇÃO - ESPERA email e senha no corpo da requisição (POST)
+// Login (com senha criptografada)
 exports.findOne = (req, res) => {
-  if (!req.body) {
-    res.status(400).send({ message: "body vaziu" });
+  const { email, senha } = req.body;
+
+  if (!email || !senha) {
+    res.status(400).send({ message: "Email e senha obrigatórios." });
     return;
   }
 
-  const body = new User({
-    email: req.body.email || null,
-    senha: req.body.senha || null,
-  });
-
-  User.findById(body, (err, data) => {
+  User.findByEmail(email, senha, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
-        res.status(404).send({ message: `(controllers) pessoa não existe.` });
+        res.status(404).send({ message: "Usuário não encontrado." });
+      } else if (err.kind === "invalid_password") {
+        res.status(401).send({ message: "Senha incorreta." });
       } else {
-        res.status(500).send({ message: "Erro ao buscar (controllers)" });
+        res.status(500).send({ message: "Erro ao buscar usuário." });
       }
-    } else res.send(data);
+    } else {
+      res.send(data);
+    }
   });
 };
 
-// Atualizar somente a senha
+// Atualizar senha
 exports.updateSenha = (req, res) => {
-  const email = req.body.email;
-  const novaSenha = req.body.novaSenha;
+  const { email, novaSenha } = req.body;
 
   if (!email || !novaSenha) {
-    return res.status(400).send({ message: "Email ou nova senha não enviados." });
+    res.status(400).send({ message: "Email e nova senha são obrigatórios." });
+    return;
   }
 
   User.updateSenha(email, novaSenha, (err, data) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send({ message: "Erro ao atualizar senha." });
+      res.status(500).send({ message: "Erro ao atualizar senha." });
+    } else {
+      res.send({ message: "Senha atualizada com sucesso." });
     }
-    res.status(200).send({ message: "Senha atualizada com sucesso." });
   });
 };
-
