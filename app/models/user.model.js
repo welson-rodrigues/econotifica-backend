@@ -154,6 +154,39 @@ Usuari.removeAll = result => {
 };
 module.exports = Usuari;
 
+
+//Buscar usuário por email
+Usuari.findByEmail = (email, senha, result) => {
+  pool.query('SELECT * FROM pessoa WHERE email = $1', [email], (err, res) => {
+    if (err) {
+      result(err, null);
+      return;
+    }
+
+    if (res.rows.length === 0) {
+      result({ kind: "not_found" }, null);
+      return;
+    }
+
+    const user = res.rows[0];
+
+    // Comparar senha
+    bcrypt.compare(senha, user.senha, (err, same) => {
+      if (err) {
+        result(err, null);
+        return;
+      }
+
+      if (!same) {
+        result({ kind: "invalid_password" }, null);
+        return;
+      }
+
+      result(null, user);
+    });
+  });
+};
+
 // Atualizar senha
 Usuari.updateSenha = (email, novaSenha, result) => {
   console.log("Atualizando senha de:", email);
