@@ -10,7 +10,6 @@ const Usuari = function (user) {
   //user = user, Fixass = Usuari
 };
 
-
 Usuari.create = (NewUser, result) => {
 
     pool.query(
@@ -91,15 +90,9 @@ Usuari.getAll = ( result) => {
   });
 };
 
-
-
-
-
 // APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
 // APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
 // APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
-
-
 
 Usuari.updateById = (id, user, result) => {
     console.log(user)
@@ -130,15 +123,6 @@ Usuari.updateById = (id, user, result) => {
     );
 };
 
-
-
-
-
-
-
-
-
-
 Usuari.remove = (id, result) => {
     pool.query("DELETE FROM user WHERE id = $1", id, (err, res) => {
         if (err) {
@@ -167,3 +151,25 @@ Usuari.removeAll = result => {
     });
 };
 module.exports = Usuari;
+
+// Atualizar senha
+Usuari.updateSenha = (email, novaSenha, result) => {
+  pool.query(
+    "UPDATE pessoa SET senha = $1 WHERE email = $2",
+    [novaSenha, email],
+    (err, res) => {
+      if (err) {
+        console.log("Erro ao atualizar senha:", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.rowCount === 0) {
+        result({ kind: "not_found" }, null);
+        return;
+      }
+
+      result(null, res);
+    }
+  );
+};
