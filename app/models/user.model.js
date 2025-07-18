@@ -154,6 +154,7 @@ module.exports = Usuari;
 
 // Atualizar senha
 Usuari.updateSenha = (email, novaSenha, result) => {
+  console.log("Atualizando senha de:", email);
   pool.query(
     "UPDATE pessoa SET senha = $1 WHERE email = $2",
     [novaSenha, email],
