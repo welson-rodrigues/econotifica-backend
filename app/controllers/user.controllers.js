@@ -55,4 +55,21 @@ exports.findOne = (req, res) => {
   });
 };
 
-// outros métodos ...
+// Atualizar somente a senha
+exports.updateSenha = (req, res) => {
+  const email = req.body.email;
+  const novaSenha = req.body.novaSenha;
+
+  if (!email || !novaSenha) {
+    return res.status(400).send({ message: "Email ou nova senha não enviados." });
+  }
+
+  User.updateSenha(email, novaSenha, (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({ message: "Erro ao atualizar senha." });
+    }
+    res.status(200).send({ message: "Senha atualizada com sucesso." });
+  });
+};
+
