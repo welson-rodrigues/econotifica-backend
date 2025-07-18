@@ -1,4 +1,6 @@
 const pool = require("../config/db.js");
+const bcrypt = require("bcrypt");
+
 // constructor Fixass
 const Usuari = function (user) {
   this.nome = user.nome;
@@ -155,22 +157,32 @@ module.exports = Usuari;
 // Atualizar senha
 Usuari.updateSenha = (email, novaSenha, result) => {
   console.log("Atualizando senha de:", email);
-  pool.query(
-    "UPDATE pessoa SET senha = $1 WHERE email = $2",
-    [novaSenha, email],
-    (err, res) => {
-      if (err) {
-        console.log("Erro ao atualizar senha:", err);
-        result(err, null);
-        return;
-      }
 
-      if (res.rowCount === 0) {
-        result({ kind: "not_found" }, null);
-        return;
-      }
-
-      result(null, res);
+  // Criptografar a nova senha
+  bcrypt.hash(novaSenha, 10, (err, hash) => {
+    if (err) {
+      console.log("Erro ao criptografar senha:", err);
+      result(err, null);
+      return;
     }
-  );
+
+    pool.query(
+      "UPDATE pessoa SET senha = $1 WHERE email = $2",
+      [hash, email],
+      (err, res) => {
+        if (err) {
+          console.log("Erro ao atualizar senha:", err);
+          result(err, null);
+          return;
+        }
+
+        if (res.rowCount === 0) {
+          result({ kind: "not_found" }, null);
+          return;
+        }
+
+        result(null, res);
+      }
+    );
+  });
 };
