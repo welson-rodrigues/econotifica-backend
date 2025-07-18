@@ -2,7 +2,7 @@ module.exports = app => {
   const Usuari = require("../controllers/user.controllers.js");
   const Lixo = require("../controllers/lixeira.controllers.js");
   const Cidade = require("../controllers/cidade.controllers.js");
-
+  
   var router = require("express").Router();
 
   // rotas usuario
@@ -24,6 +24,9 @@ module.exports = app => {
   router.delete("/api/user/:id", Usuari.delete);
 
   router.delete("/api/user", Usuari.deleteAll);
+  
+  // atualizar senha (esqueci a senha)
+  router.put("/api/user/senha", Usuari.updateSenha);
 
   app.use("/", router);
 };
