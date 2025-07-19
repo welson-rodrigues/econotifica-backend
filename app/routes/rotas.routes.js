@@ -5,28 +5,25 @@ module.exports = app => {
   
   var router = require("express").Router();
 
-  // rotas usuario
-  router.post("/api/user", Usuari.create); // criar usuário
+  // Rotas usuario
+  router.post("/api/user", Usuari.create);
+  router.get("/api/user", Usuari.findAll);
+  router.post("/api/user/login", Usuari.findOne);
+  
+  // Nova rota para verificar email
+  router.post("/api/user/check-email", Usuari.checkEmail);
+  
+  // Rota para atualizar senha
+  router.put("/api/user/senha", Usuari.updateSenha);
 
-  router.get("/api/user", Usuari.findAll); // listar todos usuários
-
-  // ALTERAÇÃO: trocar GET por POST para login
-  router.post("/api/user/login", Usuari.findOne); // login (autenticação)
-
-  // rotas lixeiras
+  // Rotas lixeiras
   router.get("/api/lixeira", Lixo.findAll);
-
   router.put("/api/lixeira/:id", Lixo.update);
 
-  // outras rotas não testadas
+  // Outras rotas
   router.put("/api/user/:id", Usuari.update);
-
   router.delete("/api/user/:id", Usuari.delete);
-
   router.delete("/api/user", Usuari.deleteAll);
-  
-  // atualizar senha (esqueci a senha)
-  router.put("/api/user/senha", Usuari.updateSenha);
 
   app.use("/", router);
 };
