@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const pool = require("../config/db.config.js");
+const pool = require("../config/db.js");
 
 const Usuari = function (usuario) {
   this.tipo = usuario.tipo;
