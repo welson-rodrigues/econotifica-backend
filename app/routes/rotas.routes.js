@@ -7,7 +7,7 @@ module.exports = app => {
 
   // Rotas usuario
   router.post("/api/user", Usuari.create);
-  router.get("/api/user", Usuari.findAll);
+  //router.get("/api/user", Usuari.findAll);
   router.post("/api/user/login", Usuari.findOne);
   
   // Nova rota para verificar email
@@ -21,9 +21,9 @@ module.exports = app => {
   router.put("/api/lixeira/:id", Lixo.update);
 
   // Outras rotas
-  router.put("/api/user/:id", Usuari.update);
-  router.delete("/api/user/:id", Usuari.delete);
-  router.delete("/api/user", Usuari.deleteAll);
+  //router.put("/api/user/:id", Usuari.update);
+  //router.delete("/api/user/:id", Usuari.delete);
+  //router.delete("/api/user", Usuari.deleteAll);
   
   app.use("/", router);
 };
