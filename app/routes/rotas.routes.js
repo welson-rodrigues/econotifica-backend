@@ -24,29 +24,6 @@ module.exports = app => {
   router.put("/api/user/:id", Usuari.update);
   router.delete("/api/user/:id", Usuari.delete);
   router.delete("/api/user", Usuari.deleteAll);
-
-  // Nova rota para verificar email
-  router.post("/api/user/check-email", (req, res) => {
-    const { email } = req.body;
-    
-    if (!email) {
-      return res.status(400).json({ success: false, message: "Email é obrigatório" });
-    }
   
-    User.findByEmailOnly(email, (err, user) => {
-      if (err) {
-        return res.status(404).json({ 
-          success: false, 
-          message: "Email não encontrado" 
-        });
-      }
-      res.json({ 
-        success: true, 
-        message: "Email encontrado",
-        exists: true 
-      });
-    });
-  });
-
   app.use("/", router);
 };
