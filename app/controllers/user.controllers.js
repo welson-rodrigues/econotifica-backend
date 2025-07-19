@@ -54,9 +54,14 @@ exports.updateSenha = (req, res) => {
 
   User.updateSenha(email, novaSenha, (err, data) => {
     if (err) {
-      res.status(500).send({ message: "Erro ao atualizar senha." });
+      if (err.kind === "not_found") {
+        res.status(404).send({ message: "Usuário não encontrado." });
+      } else {
+        res.status(500).send({ message: "Erro ao atualizar senha." });
+      }
     } else {
       res.send({ message: "Senha atualizada com sucesso." });
     }
   });
 };
+
