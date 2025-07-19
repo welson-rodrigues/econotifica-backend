@@ -43,7 +43,29 @@ exports.findOne = (req, res) => {
   });
 };
 
-// Atualizar senha
+// Verificar se email existe (nova função)
+exports.checkEmail = (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    res.status(400).send({ message: "Email é obrigatório." });
+    return;
+  }
+
+  User.findByEmailOnly(email, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({ message: "Email não encontrado." });
+      } else {
+        res.status(500).send({ message: "Erro ao verificar email." });
+      }
+    } else {
+      res.send({ message: "Email encontrado.", exists: true });
+    }
+  });
+};
+
+// Atualizar senha (versão corrigida)
 exports.updateSenha = (req, res) => {
   const { email, novaSenha } = req.body;
 
@@ -52,22 +74,26 @@ exports.updateSenha = (req, res) => {
     return;
   }
 
+  console.log(`Tentativa de atualização de senha para: ${email}`);
+
   // Primeiro verifica se o email existe
-  User.findByEmail(email, (err, data) => {
+  User.findByEmailOnly(email, (err, userData) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({ message: "Email não encontrado." });
       } else {
-        res.status(500).send({ message: "Erro ao buscar usuário." });
+        res.status(500).send({ message: "Erro ao verificar email." });
       }
       return;
     }
 
     // Se o email existe, atualiza a senha
-    User.updateSenha(email, novaSenha, (err, data) => {
-      if (err) {
+    User.updateSenha(email, novaSenha, (updateErr, updateData) => {
+      if (updateErr) {
+        console.error("Erro ao atualizar senha:", updateErr);
         res.status(500).send({ message: "Erro ao atualizar senha." });
       } else {
+        console.log(`Senha atualizada com sucesso para: ${email}`);
         res.send({ message: "Senha atualizada com sucesso." });
       }
     });
