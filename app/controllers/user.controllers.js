@@ -52,16 +52,24 @@ exports.updateSenha = (req, res) => {
     return;
   }
 
-  User.updateSenha(email, novaSenha, (err, data) => {
+  // Primeiro verifica se o email existe
+  User.findByEmail(email, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
-        res.status(404).send({ message: "Usuário não encontrado." });
+        res.status(404).send({ message: "Email não encontrado." });
       } else {
-        res.status(500).send({ message: "Erro ao atualizar senha." });
+        res.status(500).send({ message: "Erro ao buscar usuário." });
       }
-    } else {
-      res.send({ message: "Senha atualizada com sucesso." });
+      return;
     }
+
+    // Se o email existe, atualiza a senha
+    User.updateSenha(email, novaSenha, (err, data) => {
+      if (err) {
+        res.status(500).send({ message: "Erro ao atualizar senha." });
+      } else {
+        res.send({ message: "Senha atualizada com sucesso." });
+      }
+    });
   });
 };
-
