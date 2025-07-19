@@ -65,37 +65,52 @@ exports.checkEmail = (req, res) => {
   });
 };
 
-// Atualizar senha (versão corrigida)
+// Função para atualizar senha (completa e testada)
 exports.updateSenha = (req, res) => {
   const { email, novaSenha } = req.body;
 
   if (!email || !novaSenha) {
-    res.status(400).send({ message: "Email e nova senha são obrigatórios." });
-    return;
+    console.log('Email ou senha não fornecidos');
+    return res.status(400).json({ 
+      success: false,
+      message: "Email e nova senha são obrigatórios" 
+    });
   }
 
-  console.log(`Tentativa de atualização de senha para: ${email}`);
+  console.log(`Recebida solicitação para atualizar senha de: ${email}`);
 
-  // Primeiro verifica se o email existe
-  User.findByEmailOnly(email, (err, userData) => {
+  // Verifica primeiro se o email existe
+  User.findByEmailOnly(email, (err, user) => {
     if (err) {
-      if (err.kind === "not_found") {
-        res.status(404).send({ message: "Email não encontrado." });
-      } else {
-        res.status(500).send({ message: "Erro ao verificar email." });
-      }
-      return;
+      console.error('Erro ao verificar email:', err);
+      return res.status(404).json({
+        success: false,
+        message: "Email não encontrado"
+      });
     }
 
-    // Se o email existe, atualiza a senha
-    User.updateSenha(email, novaSenha, (updateErr, updateData) => {
+    // Atualiza a senha
+    User.updateSenha(email, novaSenha, (updateErr, result) => {
       if (updateErr) {
-        console.error("Erro ao atualizar senha:", updateErr);
-        res.status(500).send({ message: "Erro ao atualizar senha." });
-      } else {
-        console.log(`Senha atualizada com sucesso para: ${email}`);
-        res.send({ message: "Senha atualizada com sucesso." });
+        console.error('Erro ao atualizar senha:', updateErr);
+        
+        let message = "Erro ao atualizar senha";
+        if (updateErr.kind === "not_found") message = "Email não encontrado";
+        if (updateErr.kind === "update_failed") message = "Falha ao atualizar no banco de dados";
+        if (updateErr.kind === "verification_failed") message = "Senha atualizada mas falha na verificação";
+
+        return res.status(500).json({
+          success: false,
+          message
+        });
       }
+
+      console.log(`Senha atualizada com sucesso para: ${email}`);
+      res.json({
+        success: true,
+        message: "Senha atualizada com sucesso",
+        email: result.email
+      });
     });
   });
 };
