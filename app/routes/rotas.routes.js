@@ -2,6 +2,7 @@ module.exports = app => {
   const Usuari = require("../controllers/user.controllers.js");
   const Lixo = require("../controllers/lixeira.controllers.js");
   const Cidade = require("../controllers/cidade.controllers.js");
+  const Sensor = require("../controllers/sensor.controller.js"); // novo
   
   var router = require("express").Router();
 
@@ -19,7 +20,7 @@ module.exports = app => {
   // Rotas lixeiras
   router.get("/api/lixeira", Lixo.findAll);
   router.put("/api/lixeira/:id", Lixo.update);
-
+  router.get("/api/lixeiras", Sensor.getUltimosDadosSensor);
   // Outras rotas
   //router.put("/api/user/:id", Usuari.update);
   //router.delete("/api/user/:id", Usuari.delete);
