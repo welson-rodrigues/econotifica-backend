@@ -1,12 +1,9 @@
 require('dotenv').config();
-console.log("Conectando ao banco em:", process.env.DB_HOST);
 const { Pool } = require("pg");
 
-// const pg = require("pg");
-// const { Pool, Client } = pg;
+console.log("Conectando ao banco em:", process.env.DB_HOST);
 
-// const dbConfig = require("../config/db.config.js");
-
+// Conexão com parâmetros individuais, incluindo SSL obrigatório para Render
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -14,7 +11,7 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   ssl: {
-    rejectUnauthorized: false,
+    rejectUnauthorized: false, // necessário para Render.com
   },
   max: 20,
   idleTimeoutMillis: 30000,
