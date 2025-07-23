@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
 
-// Criar usuário
+// SUA FUNÇÃO ORIGINAL (mantida intacta)
 exports.create = (req, res) => {
   if (!req.body) {
     res.status(400).send({ message: "Conteúdo vazio!" });
@@ -19,7 +19,53 @@ exports.create = (req, res) => {
   });
 };
 
-// Login (com senha criptografada)
+// MINHA ADIÇÃO (nova função com tratamento aprimorado)
+exports.createWithValidation = (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ 
+      success: false,
+      message: "Dados de cadastro não fornecidos" 
+    });
+  }
+
+  User.createWithValidation(req.body, (err, data) => {
+    if (err) {
+      let status = 500;
+      let message = "Erro ao criar usuário";
+
+      if (err.kind === "missing_fields") {
+        status = 400;
+        message = "Preencha todos os campos obrigatórios";
+      } else if (err.kind === "email_exists") {
+        status = 409;
+        message = "Email já cadastrado";
+      } else if (err.kind === "invalid_email") {
+        status = 400;
+        message = "Email inválido";
+      }
+
+      return res.status(status).json({ 
+        success: false,
+        message 
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      data: {
+        id: data.id,
+        tipo: data.tipo,
+        nome: data.nome,
+        email: data.email,
+        bairro: data.bairro,
+        cidade: data.cidade
+      },
+      message: "Usuário cadastrado com sucesso"
+    });
+  });
+};
+
+// SUAS FUNÇÕES ORIGINAIS (mantidas intactas)
 exports.findOne = (req, res) => {
   const { email, senha } = req.body;
 
@@ -43,7 +89,6 @@ exports.findOne = (req, res) => {
   });
 };
 
-// Verificar se email existe (nova função)
 exports.checkEmail = (req, res) => {
   const { email } = req.body;
 
@@ -65,7 +110,6 @@ exports.checkEmail = (req, res) => {
   });
 };
 
-// Função para atualizar senha (completa e testada)
 exports.updateSenha = (req, res) => {
   const { email, novaSenha } = req.body;
 
@@ -77,9 +121,6 @@ exports.updateSenha = (req, res) => {
     });
   }
 
-  console.log(`Recebida solicitação para atualizar senha de: ${email}`);
-
-  // Verifica primeiro se o email existe
   User.findByEmailOnly(email, (err, user) => {
     if (err) {
       console.error('Erro ao verificar email:', err);
@@ -89,11 +130,9 @@ exports.updateSenha = (req, res) => {
       });
     }
 
-    // Atualiza a senha
     User.updateSenha(email, novaSenha, (updateErr, result) => {
       if (updateErr) {
         console.error('Erro ao atualizar senha:', updateErr);
-        
         let message = "Erro ao atualizar senha";
         if (updateErr.kind === "not_found") message = "Email não encontrado";
         if (updateErr.kind === "update_failed") message = "Falha ao atualizar no banco de dados";
