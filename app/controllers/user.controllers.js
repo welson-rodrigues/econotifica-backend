@@ -156,4 +156,26 @@ exports.updateSenha = (req, res) => {
       });
     });
   });
+  exports.salvarExpoToken = (req, res) => {
+  const { userId, expoToken } = req.body;
+
+  if (!userId || !expoToken) {
+    return res.status(400).json({ message: "userId e expoToken são obrigatórios" });
+  }
+
+  User.salvarExpoToken(userId, expoToken, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+      return res.status(500).json({ message: "Erro ao salvar token" });
+    }
+
+    res.status(200).json({
+      message: "Token salvo com sucesso",
+      user: data
+    });
+  });
+};
+
 };
