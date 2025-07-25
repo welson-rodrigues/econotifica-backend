@@ -156,7 +156,9 @@ exports.updateSenha = (req, res) => {
       });
     });
   });
-  exports.salvarExpoToken = (req, res) => {
+};
+
+exports.salvarExpoToken = (req, res) => {
   const { userId, expoToken } = req.body;
 
   if (!userId || !expoToken) {
@@ -176,6 +178,4 @@ exports.updateSenha = (req, res) => {
       user: data
     });
   });
-};
-
 };
