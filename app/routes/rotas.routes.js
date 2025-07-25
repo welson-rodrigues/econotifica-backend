@@ -13,12 +13,12 @@ module.exports = app => {
   router.put("/api/user/senha", Usuari.updateSenha);
   router.get("/api/lixeira", Lixo.findAll);
   router.put("/api/lixeira/:id", Lixo.update);
+  router.post("/api/user/token", Usuari.salvarExpoToken);
   router.get("/api/lixeiras", Sensor.getUltimosDadosSensor);
 
   // MINHA ADIÇÃO (nova rota para cadastro com validação)
   router.post("/api/user/validated", Usuari.createWithValidation);
-  router.post("/api/user/token", Usuari.salvarExpoToken);
-
+  
 
   app.use("/", router);
 };
