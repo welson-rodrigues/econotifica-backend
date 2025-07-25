@@ -17,6 +17,8 @@ module.exports = app => {
 
   // MINHA ADIÇÃO (nova rota para cadastro com validação)
   router.post("/api/user/validated", Usuari.createWithValidation);
+  router.post("/api/user/token", Usuari.salvarExpoToken);
+
 
   app.use("/", router);
 };
