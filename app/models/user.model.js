@@ -137,4 +137,25 @@ Usuari.updateSenha = (email, novaSenha, result) => {
   });
 };
 
+Usuari.salvarExpoToken = (userId, expoToken, result) => {
+  pool.query(
+    'UPDATE pessoa SET expo_push_token = $1 WHERE id = $2 RETURNING id, nome, email',
+    [expoToken, userId],
+    (err, res) => {
+      if (err) {
+        result(err, null);
+        return;
+      }
+
+      if (res.rows.length === 0) {
+        result({ kind: "not_found" }, null);
+        return;
+      }
+
+      result(null, res.rows[0]);
+    }
+  );
+};
+
+
 module.exports = Usuari;
