@@ -33,7 +33,7 @@ const Lixeira = require("../models/lixeira.model.js");
 
 // Puxa todos os dados
 exports.findAll = (req, res) => {
-  Lixeira.getAll( (err, data) => {
+  Lixeira.getAll((err, data) => {
     if (err)
       res.status(500).send({
         message: err.message || "(controllers) Erro ao puchar os dados Lixeira",
@@ -78,47 +78,36 @@ ${req.params.id}.`,
   );
 };
 
-// APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
-// APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
-// APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
 
 
-
-
-
-// autenticação
 exports.findOne = (req, res) => {
+  Lixeira.findById(req.params.id, (err, data) => {
 
-  if (!req.body) {
-    res.status(400).send({
-      message: "body vaziu",
-    });
-  }
-
-  const body = new Lixeira({
-    email: req.body.email || null,
-    senha: req.body.senha || null
-  });
-
-
-  Lixeira.findById(body, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({
-          message: `(controllers) pessoa não existe ${body}.`,
+          message: `(controllers) pesquisa nao encontrada com id ${req.params.id}.`
         });
       } else {
         res.status(500).send({
-          message: "Erro ao buscar (controllers) " + body,
+          message: "Erro ao buscar lixeira (controllers) " +
+            req.params.id
         });
       }
-    } else res.send(data);
+    } else
+      res.send(data);
   });
 };
 
 
 
 
+
+
+
+// APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
+// APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
+// APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
 
 
 

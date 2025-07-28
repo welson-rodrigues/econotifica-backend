@@ -37,31 +37,31 @@ const Lixeira = function (lixo) {
 // };
 
 
-// Lixeira.findById = (lixo, result) => {
-//     console.log('findById lixo = ', lixo)
+Lixeira.findById = (id, result) => {
+  console.log('findById lixo = ', id)
 
-//         pool.query('SELECT * FROM lixeira WHERE email = $1 and senha = $2', [lixo.email, lixo.senha], (err,
-//             res) => {
-//             if (err) {
-//                 //throw error
-//                 console.log("error: ", err);
-//                 result(err, null);
-//                 return ;
-//             }
-//             if (res.rows.length) {
-//                 console.log("lixeira: ", res.rows[0]);
-//                 result(null, res.rows[0]);
-//                 return;
-//             }
-            
-//             console.log("lixo nao encontrado: res.length = ", res);
-//             result({ kind: "not_found" }, null);
-//         });
+  pool.query('SELECT * FROM lixeira WHERE id = $1', [id], (err,
+    res) => {
+    if (err) {
+      //throw error
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+    if (res.rows.length) {
+      console.log("lixeira: ", res.rows[0]);
+      result(null, res.rows[0]);
+      return;
+    }
 
-// };
+    console.log("lixo nao encontrado: res.length = ", res);
+    result({ kind: "not_found" }, null);
+  });
+
+};
 
 
-Lixeira.getAll = ( result) => {
+Lixeira.getAll = (result) => {
   let query = "SELECT * FROM lixeira";
 
   pool.query(query, (err, res) => {
@@ -106,30 +106,30 @@ Lixeira.updateById = (id, lixo, result) => {
 // APARTIR DAQUI NÃO FOI TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO // CODIGO NÃO TESTADO 
 
 Lixeira.remove = (id, result) => {
-    pool.query("DELETE FROM lixo WHERE id = $1", id, (err, res) => {
-        if (err) {
-            console.log("error: ", err);
-            result(null, err);
-            return;
-        }
-        if (res.affectedRows == 0) {
-            // not found Aluno with the id
-            result({ kind: "not_found" }, null);
-            return;
-        }
-        console.log("deleted lixo with id: ", id);
-        result(null, res);
-    });
+  pool.query("DELETE FROM lixo WHERE id = $1", id, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+    if (res.affectedRows == 0) {
+      // not found Aluno with the id
+      result({ kind: "not_found" }, null);
+      return;
+    }
+    console.log("deleted lixo with id: ", id);
+    result(null, res);
+  });
 };
 Lixeira.removeAll = result => {
-    pool.query("DELETE FROM lixo", (err, res) => {
-        if (err) {
-            console.log("error: ", err);
-            result(null, err);
-            return;
-        }
-        console.log(`deleted ${res.affectedRows} lixo`);
-        result(null, res);
-    });
+  pool.query("DELETE FROM lixo", (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+    console.log(`deleted ${res.affectedRows} lixo`);
+    result(null, res);
+  });
 };
 module.exports = Lixeira;

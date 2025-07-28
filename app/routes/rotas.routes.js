@@ -13,6 +13,9 @@ module.exports = app => {
   router.put("/api/user/senha", Usuari.updateSenha);
   router.get("/api/lixeira", Lixo.findAll);
   router.put("/api/lixeira/:id", Lixo.update);
+
+  router.get("/api/lixeira/:id", Lixo.findOne); // novo
+
   router.post("/api/user/token", Usuari.salvarExpoToken);
   router.get("/api/lixeiras", Sensor.getUltimosDadosSensor);
 
