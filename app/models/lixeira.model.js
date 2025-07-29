@@ -61,20 +61,14 @@ Lixeira.findById = (id, result) => {
 };
 
 Lixeira.getAllPessoa = (id, result) => {
-  pool.query  ("select * from lixeira where user_id = $1", [id], (err,
-    res) => {
- 
-      if (err) {
-        //throw error
-        console.log("error: ", err);
-        result(err, null);
-        return;
-      }
-      if (res.rows.length) {
-        console.log("lixeira: ", res.rows[0]);
-        result(null, res.rows[0]);
-        return;
-      }
+
+  pool.query("SELECT * FROM lixeira WHERE user_id = $1", [id], (err, res) => {
+    if (err) {
+
+      console.log("error: ", err);
+      result(null, err );
+      return;
+    }
 
     // console.log("lixo: ", res.rows);
     result(null, res);
