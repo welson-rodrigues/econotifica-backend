@@ -71,7 +71,31 @@ Usuari.createWithValidation = (usuario, result) => {
   });
 };
 
-// SUAS FUNÇÕES ORIGINAIS (mantidas intactas)
+
+Usuari.findById = (id, result) => {
+  console.log("findById usuario = ", id);
+
+  pool.query("SELECT * FROM pessoa WHERE id = $1", [id], (err, res) => {
+    if (err) {
+      //throw error
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+    if (res.rows.length) {
+      console.log("pessoa: ", res.rows[0]);
+      result(null, res.rows[0]);
+      return;
+    }
+
+    console.log("pessoa nao encontrada: res.length = ", res);
+    result({ kind: "not_found" }, null);
+  });
+};
+
+
+
+
 Usuari.findByEmailOnly = (email, result) => {
   pool.query('SELECT * FROM pessoa WHERE email = $1', [email], (err, res) => {
     if (err) {

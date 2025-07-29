@@ -69,29 +69,25 @@ exports.createWithValidation = (req, res) => {
   });
 };
 
-// SUAS FUNÇÕES ORIGINAIS (mantidas intactas)
+
+
 exports.findOne = (req, res) => {
-  const { email, senha } = req.body;
-
-  if (!email || !senha) {
-    res.status(400).send({ message: "Email e senha obrigatórios." });
-    return;
-  }
-
-  User.findByEmail(email, senha, (err, data) => {
+  User.findById(req.params.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
-        res.status(404).send({ message: "Usuário não encontrado." });
-      } else if (err.kind === "invalid_password") {
-        res.status(401).send({ message: "Senha incorreta." });
+        res.status(404).send({
+          message: `(controllers) pesquisa nao encontrada com id ${req.params.id}.`,
+        });
       } else {
-        res.status(500).send({ message: "Erro ao buscar usuário." });
+        res.status(500).send({
+          message: "Erro ao buscar User (controllers) " + req.params.id,
+        });
       }
-    } else {
-      res.send(data);
-    }
+    } else res.send(data);
   });
 };
+
+
 
 exports.checkEmail = (req, res) => {
   const { email } = req.body;

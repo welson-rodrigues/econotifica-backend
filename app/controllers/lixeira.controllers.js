@@ -98,9 +98,25 @@ exports.findOne = (req, res) => {
       res.send(data);
   });
 };
+// select * from lixeira where user_id = 21;
 
-
-
+exports.findAllPessoa = (req, res) => {
+  Lixeira.getAllPessoa(req.params.id, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `(controllers) pesquisa nao encontrada com id ${req.params.id}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: "Erro ao buscar lixeira (controllers) " + req.params.id,
+        });
+      }
+    } else {
+      res.status(200).json(data.rows);
+    }
+  });
+};
 
 
 
