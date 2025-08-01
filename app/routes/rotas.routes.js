@@ -16,7 +16,8 @@ module.exports = app => {
   router.get("/api/lixeira", Lixo.findAll);
   router.get("/api/lixeira/:id", Lixo.findOne); // novo
   router.get("/api/lixeira/pessoa/:id", Lixo.findAllPessoa);
-  router.get("/api/user/:id", Usuari.findOne); // novo
+  router.get("/api/user/:id", Usuari.findOneUsu); 
+  //router.get("/api/user/:id", Usuari.findOne); // novo
 
   router.get("/api/lixeiras", Sensor.getUltimosDadosSensor);
 
