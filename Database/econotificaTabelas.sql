@@ -27,6 +27,15 @@ FOREIGN KEY (pessoa) REFERENCES pessoa (id),
 FOREIGN KEY (lixeira) REFERENCES lixeira (id)
 )
 
+CREATE TABLE sensor_data (
+  id SERIAL PRIMARY KEY,
+  serial VARCHAR(50) NOT NULL,
+  distancia REAL NOT NULL,
+  nivel INTEGER NOT NULL,
+  temperatura REAL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- create table cidade (id serial primary key, nome varchar, estado varchar, pais varchar, cep varchar);
 
