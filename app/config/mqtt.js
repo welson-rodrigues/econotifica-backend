@@ -1,6 +1,5 @@
 const mqtt = require('mqtt');
 const db = require('./db');
-const { Pool } = require('pg');
 require('dotenv').config();
 
 const BROKER = 'mqtt://192.168.1.20';
@@ -25,18 +24,25 @@ client.on('connect', () => {
 client.on('message', async (topic, message) => {
   try {
     const payload = JSON.parse(message.toString());
-    const { serial, distancia, nivel } = payload;
+    const { serial, distancia, nivel, temperatura } = payload;
 
     console.log('📨 Dados recebidos:', payload);
 
+    // Validação básica
+    if (!serial || distancia === undefined || nivel === undefined) {
+      console.warn('⚠️ Dados incompletos recebidos, ignorando:', payload);
+      return;
+    }
+
     const query = `
-      INSERT INTO sensor_data (serial, distancia, nivel, timestamp)
-      VALUES ($1, $2, $3, NOW())
+      INSERT INTO sensor_data (serial, distancia, nivel, temperatura, timestamp)
+      VALUES ($1, $2, $3, $4, NOW())
     `;
-    const values = [serial, distancia, nivel];
+    const values = [serial, distancia, nivel, temperatura ?? null];
     await db.query(query, values);
 
+    console.log('✅ Dados salvos no banco com sucesso.');
   } catch (err) {
-    console.error('⚠️ Erro ao processar mensagem MQTT:', err);
+    console.error('❌ Erro ao processar mensagem MQTT:', err);
   }
 });
